@@ -3,7 +3,7 @@
 # Uso: .\deploy-almacen.ps1
 # ============================================================
 
-$proyecto       = "API_Almacen\API_Almacen.csproj"
+$proyecto       = "..\API_Almacen\API_Almacen.csproj"
 $publishDir     = ".\publish_almacen"
 $servidor       = "SSPVCM02"
 $destino        = "\\$servidor\c$\inetpub\wwwrootssl\API_Almacen"
@@ -14,12 +14,12 @@ $fecha          = Get-Date -Format "yyyyMMdd_HHmmss"
 $backupDir      = "$backupBase\$fecha"
 
 # ── 1. Publish ──────────────────────────────────────────────
-Write-Host "[1/5] Publicando en Release..." -ForegroundColor Cyan
+Write-Host "[1/6] Publicando en Release..." -ForegroundColor Cyan
 dotnet publish $proyecto -c Release -o $publishDir
 if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: Publish fallido" -ForegroundColor Red; exit 1 }
 
 # ── 2. Backup (API aun funcionando) ─────────────────────────
-Write-Host "[2/5] Haciendo backup -> $backupDir ..." -ForegroundColor Cyan
+Write-Host "[2/6] Haciendo backup -> $backupDir ..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
 xcopy /E /Y /I "$destino\*" "$backupDir\"
 if ($LASTEXITCODE -ne 0) {
@@ -29,7 +29,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "Backup guardado en: $backupDir" -ForegroundColor Gray
 
 # ── 3. Poner app_offline.htm (API muestra mantenimiento, libera DLLs) ──
-Write-Host "[3/5] Activando modo mantenimiento..." -ForegroundColor Cyan
+Write-Host "[3/6] Activando modo mantenimiento..." -ForegroundColor Cyan
 Copy-Item $appOfflineSrc $appOfflineDst -Force
 
 # Esperar a que IIS libere el DLL principal (max 30s)
@@ -56,7 +56,7 @@ if (-not $liberado) {
 Write-Host "DLLs liberados, continuando..." -ForegroundColor Gray
 
 # ── 4. Copiar ficheros nuevos ────────────────────────────────
-Write-Host "[4/5] Copiando ficheros al servidor..." -ForegroundColor Cyan
+Write-Host "[4/6] Copiando ficheros al servidor..." -ForegroundColor Cyan
 xcopy /E /Y /I "$publishDir\*" "$destino\"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: Copia fallida, restaurando backup..." -ForegroundColor Red
@@ -89,7 +89,7 @@ Invoke-Command -ComputerName $servidor -ScriptBlock {
 }
 
 # ── 5. Quitar app_offline.htm (API vuelve sola) ──────────────
-Write-Host "[5/5] Desactivando modo mantenimiento..." -ForegroundColor Cyan
+Write-Host "[5/6] Desactivando modo mantenimiento..." -ForegroundColor Cyan
 Remove-Item $appOfflineDst -Force
 
 # Limpiar publish local
@@ -98,3 +98,26 @@ Remove-Item -Recurse -Force $publishDir
 Write-Host ""
 Write-Host "Deploy completado: https://net.onventanas.es/API_Almacen/scalar/" -ForegroundColor Green
 Write-Host "Backup disponible en: $backupDir" -ForegroundColor Gray
+
+# ── 6. Health check ─────────────────────────────────
+Write-Host ""
+Write-Host "[6/6] Verificando API..." -ForegroundColor Cyan
+$healthUrl = "https://net.onventanas.es/API_Almacen/health"
+$intentos  = 0
+$ok        = $false
+while (-not $ok -and $intentos -lt 10) {
+    $intentos++
+    try {
+        $resp = Invoke-WebRequest -Uri $healthUrl -UseBasicParsing -TimeoutSec 5
+        if ($resp.StatusCode -eq 200) {
+            Write-Host "API respondiendo correctamente (HTTP 200) -> $healthUrl" -ForegroundColor Green
+            $ok = $true
+        }
+    } catch {
+        Write-Host "  Intento $intentos/10 - API aun no responde, esperando 3s..." -ForegroundColor Gray
+        Start-Sleep -Seconds 3
+    }
+}
+if (-not $ok) {
+    Write-Host "AVISO: La API no respondio al health check tras 10 intentos. Revisa IIS." -ForegroundColor Yellow
+}
