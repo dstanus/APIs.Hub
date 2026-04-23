@@ -27,6 +27,3 @@ appsettings.*.json
 Thumbs.db
 .DS_Store
 
-# API projects (tienen su propio repo)
-API_OnVentanas/
-API_Almacen/
