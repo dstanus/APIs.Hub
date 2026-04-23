@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.2.2" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>apis-apphost-secrets</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- APIs orquestadas -->
+    <ProjectReference Include="..\..\API_OnVentanas\API_OnVentanas.csproj" />
+    <ProjectReference Include="..\..\API_Almacen\API_Almacen.csproj" />
+  </ItemGroup>
+
+</Project>

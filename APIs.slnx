@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Aspire/APIs.AppHost/APIs.AppHost.csproj" />
+  <Project Path="Aspire/APIs.ServiceDefaults/APIs.ServiceDefaults.csproj" />
+  <Project Path="API_Almacen/API_Almacen.csproj" />
+  <Project Path="API_OnVentanas/API_OnVentanas.csproj" />
+</Solution>

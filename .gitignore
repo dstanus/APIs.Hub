@@ -1,0 +1,32 @@
+# Build / Publish
+bin/
+obj/
+publish_*/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+
+# Logs
+logs/
+*.log
+
+# Secrets
+appsettings.*.json
+!appsettings.json
+!appsettings.Production.json
+!appsettings.Development.json
+
+# OS
+Thumbs.db
+.DS_Store
+
+# API projects (tienen su propio repo)
+API_OnVentanas/
+API_Almacen/
