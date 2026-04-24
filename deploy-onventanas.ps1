@@ -102,7 +102,7 @@ Write-Host "Backup disponible en: $backupDir" -ForegroundColor Gray
 # ── 6. Health check ─────────────────────────────────
 Write-Host ""
 Write-Host "[6/6] Verificando API..." -ForegroundColor Cyan
-$healthUrl = "https://net.onventanas.es/API_OnVentanas/health"
+$healthUrl = "https://net.onventanas.es/API_OnVentanas/api/health"
 $intentos  = 0
 $ok        = $false
 while (-not $ok -and $intentos -lt 10) {
