@@ -10,10 +10,9 @@
     <UserSecretsId>apis-apphost-secrets</UserSecretsId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- APIs orquestadas -->
+  <!-- ItemGroup>
     <ProjectReference Include="..\..\API_OnVentanas\API_OnVentanas.csproj" />
     <ProjectReference Include="..\..\API_Almacen\API_Almacen.csproj" />
-  </ItemGroup>
+  </ItemGroup -->
 
 </Project>

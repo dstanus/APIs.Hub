@@ -1,13 +1,17 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
 
-// ── API OnVentanas ──────────────────────────────────────────────────────────
+// ── APIs ejecutadas desde los ejecutables publicados en IIS ─────────────────
+
+// API OnVentanas (publicado en wwwrootssl)
 var apiOnVentanas = builder
-    .AddProject<Projects.API_OnVentanas>("api-onventanas")
+    .AddExecutable("api-onventanas", "C:\\inetpub\\wwwrootssl\\API_OnVentanas\\API_OnVentanas.exe", "C:\\inetpub\\wwwrootssl\\API_OnVentanas")
+    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:18889")
     .WithExternalHttpEndpoints();
 
-// ── API Almacen ─────────────────────────────────────────────────────────────
+// API Almacen (publicado en wwwrootssl)
 var apiAlmacen = builder
-    .AddProject<Projects.API_Almacen>("api-almacen")
+    .AddExecutable("api-almacen", "C:\\inetpub\\wwwrootssl\\API_Almacen\\API_Almacen.exe", "C:\\inetpub\\wwwrootssl\\API_Almacen")
+    .WithEnvironment("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:18889")
     .WithExternalHttpEndpoints();
 
 builder.Build().Run();
